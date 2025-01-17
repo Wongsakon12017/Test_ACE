@@ -64,7 +64,8 @@
         @click="showDetails(launch)">
         <strong>{{ launch.name }}</strong> <br>
         <strong>Date:</strong> {{ new Date(launch.date_utc).toLocaleString() }}<br>
-        <strong>Crews:</strong> {{ launch.crews.length }}
+        <strong>Crews:</strong> {{ launch.crews.length }}<br>
+        <strong>Status:</strong> {{ launch.statusRocket }} <br>
         <br>
         <img 
           :src="launch.rocketDetails.flickr_images?.[0]" 
