@@ -4,40 +4,50 @@
   <title>SpaceX Launches</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .launch-list {
+      list-style: none;
+      padding: 0;
+    }
     .launch-item {
       padding: 10px;
       border: 1px solid #d80c0c;
       margin-bottom: 10px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
-  
-    .launch-item:hover {
-      background-color: #f7f7f7;
+    .modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-  
-    .launch-status {
-      font-weight: bold;
-      color: #333;
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
     }
-  
-    .launch-status.upcoming {
-      color: #f39c12;
-    }
-  
-    .launch-status.success {
-      color: #27ae60;
-    }
-  
-    .launch-status.failed {
-      color: #e74c3c;
+    .rocket-image {
+        width: 100%;
+        max-width: 300px;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
     }
   </style>
-  
 </head>
 <body>
   <div id="app"> 
-    <h1>Rocket launch table</h1>
+    <h1>Rocket Launch Table</h1>
     <ul class="launch-list">
       <div>
         <button @click="setSortOp('name')">
@@ -48,40 +58,38 @@
         </button>
       </div>
       <li 
-      v-for="launch in launches" 
-      :key="launch.id" 
-      class="launch-item" 
-      @click="showDetails(launch)">
-      <strong>{{ launch.name }}</strong> <br>
-      <strong>Date:</strong> {{ new Date(launch.date_utc).toLocaleString() }} <br>
-      <strong>Crews:</strong> {{ launch.crews.length }} <br>
-      <strong>Status:</strong> {{ launch.statusRocket }} <br>
-      <img 
-        :src="launch.rocketDetails.flickr_images[0]" 
-        alt="Rocket Image" 
-        class="rocket-image" 
-        v-if="launch.rocketDetails.flickr_images.length">
-    </li>
-      </ul>
-
-    <div v-if="selectedLaunch" class="modal-overlay" @click="closeModal"></div>
-    <div v-if="selectedLaunch" class="modal">
-        <h2>{{ selectedLaunch.name }}</h2>
-        <p><strong>Details:</strong> {{ selectedLaunch.detailsRocket }}</p>
-        <p><strong>Crews Member:</strong> {{ selectedLaunch.crews.join(', ') }}</p>
-        <p><strong>Rocket:</strong> {{ selectedLaunch.rocketDetails.name }}</p>
-        <p><strong>Launchpad:</strong> {{ selectedLaunch.launchpad }}</p>
-        <p><strong>Status:</strong>{{ launch.upcoming }}</p>
+        v-for="launch in launches" 
+        :key="launch.id" 
+        class="launch-item" 
+        @click="showDetails(launch)">
+        <strong>{{ launch.name }}</strong> <br>
+        <strong>Date:</strong> {{ new Date(launch.date_utc).toLocaleString() }}<br>
+        <strong>Crews:</strong> {{ launch.crews.length }}
+        <br>
         <img 
-          :src="selectedLaunch.rocketDetails.flickr_images[0]" 
+          :src="launch.rocketDetails.flickr_images?.[0]" 
           alt="Rocket Image" 
           class="rocket-image" 
-          v-if="selectedLaunch.rocketDetails.flickr_images.length">
-        <button @click="closeModal">Close</button>
-      </div>
+          v-if="launch.rocketDetails.flickr_images?.length">
+      </li>
+    </ul>
+
+    <div v-if="selectedLaunch" class="modal-overlay" @click="closeModal"></div>
+    <div v-if="selectedLaunch" class="modal" @click.stop>
+      <h2>{{ selectedLaunch.name }}</h2>
+      <p><strong>Details:</strong> {{ selectedLaunch.detailsRocket }}</p>
+      <p><strong>Crew Members:</strong> {{ selectedLaunch.crews.join(', ') || 'None' }}</p>
+      <p><strong>Rocket:</strong> {{ selectedLaunch.rocketDetails.name }}</p>
+      <p><strong>Launchpad:</strong> {{ selectedLaunch.launchpad }}</p>
+      <img 
+        :src="selectedLaunch.rocketDetails.flickr_images?.[0]" 
+        alt="Rocket Image" 
+        class="rocket-image" 
+        v-if="selectedLaunch.rocketDetails.flickr_images?.length">
+      <button @click="closeModal">Close</button>
+    </div>
   </div>
 
   <script src="app.js"></script>
 </body>
 </html>
-
